@@ -1,0 +1,33 @@
+# uv / virtual environments
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+build/
+dist/
+
+# Secrets — never commit your IBM Quantum API token
+.env
+*.token
+qiskit-ibm.json
+~/.qiskit/
+
+# Tooling
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Outputs
+*.png
+*.svg
+!docs/**/*.png
+!docs/**/*.svg

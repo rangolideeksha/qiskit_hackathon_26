@@ -1,48 +1,57 @@
 # qiskit_hackathon_26
-repo to walkthrough ibm qiskit for NQCC hackathon 26
 
+Qiskit walkthrough and practice repo for the **NQCC UK Quantum Hackathon 2026** (Warwick, 18–20 Aug). Structured around two IBM Quantum Learning courses, with runnable reference circuits and a per-project `uv`-managed environment.
 
-# 15-Hour Quantum Study Plan — NQCC Hackathon Primer
+## Quickstart
 
-**Target:** NQCC UK Quantum Hackathon, 18–20 Aug (Warwick) · **Toolchain:** IBM Qiskit (confirmed)
-**Courses:** [Basics of Quantum Information](https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information) · [Fundamentals of Quantum Algorithms](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms)
+Requires [`uv`](https://docs.astral.sh/uv/). Everything runs offline on the Aer simulator — no IBM account needed to start.
 
-> Exams/badges are optional — the goal is practical understanding, not certification.
+```bash
+uv sync                                   # build the project venv from pyproject.toml + uv.lock
+uv run python examples/bell_state.py      # smoke test
+```
 
----
+`uv sync` creates a `.venv/` scoped to this repo, so the environment never leaks between projects. Add a dependency with `uv add <pkg>`; it updates `pyproject.toml` and `uv.lock` together. For the Jupyter extras: `uv sync --extra notebooks`.
 
-## Setup (do before Hour 4)
-- [ ] Create IBM Quantum Platform account
-- [ ] Generate and save API token
-- [ ] Install Qiskit locally (or confirm access to hosted notebooks)
-- [ ] Test-run a trivial circuit on a simulator to confirm the environment works
+## Layout
 
----
+```
+qiskit_hackathon_26/
+├── pyproject.toml          # deps + uv config (Qiskit 2.x, Aer, ibm-runtime)
+├── uv.lock                 # pinned, reproducible resolution
+├── .python-version         # 3.13 (latest with Qiskit wheels; >=3.10 supported)
+├── .env.example            # copy to .env for your IBM Quantum token
+├── docs/
+│   └── study_plan.md       # the 15-hour primer, hours mapped to folders
+├── src/qhack/              # shared helpers (run_counts, backend selection)
+├── examples/               # runnable reference circuits (all verified)
+│   ├── bell_state.py       # entanglement smoke test
+│   ├── teleportation.py    # teleport + verify (measures 0 every time)
+│   ├── deutsch_jozsa.py    # constant vs. balanced in one query
+│   ├── qft.py              # QFT from scratch, checked vs. analytic DFT
+│   └── grover.py           # search with optimal iteration count
+├── course1_basics/         # Basics of Quantum Information — labs, Hours 1–6
+└── course2_algorithms/     # Fundamentals of Quantum Algorithms — labs, Hours 7–15
+```
 
-## Course 1 — Basics of Quantum Information
+## Examples
 
-- [ ] **Hour 1 — Single systems.** States as vectors, measurements, unitary operations. Review pace; pin down IBM's notation conventions.
-- [ ] **Hour 2 — Multiple systems.** Tensor products, entanglement, measurements on composite systems. Trace a few examples by hand.
-- [ ] **Hour 3 — Quantum circuits lesson.** Gates, circuit diagrams, how IBM formalizes circuit computations.
-- [ ] **Hour 4 — Qiskit lab.** Set up environment; rebuild the circuits from Hours 2–3 in code. Inspect statevectors and measurement histograms.
-- [ ] **Hour 5 — Teleportation & superdense coding.** Trace both circuits carefully, then implement teleportation in Qiskit.
-- [ ] **Hour 6 — CHSH game / inequality.** Work through the strategy and why quantum beats classical. *(Optional: Course 1 exam.)*
+Each script prints its circuit and a correctness check:
 
----
+```bash
+uv run python examples/teleportation.py   # -> teleport verified (out=0): 1024 / 1024
+uv run python examples/qft.py             # -> QFT matches the analytic DFT matrix: True
+uv run python examples/grover.py          # -> marked=101  found=101  success=yes
+```
 
-## Course 2 — Fundamentals of Quantum Algorithms
+Copy from these into `course1_basics/` and `course2_algorithms/` as you work each lab hour.
 
-- [ ] **Hour 7 — Quantum query model.** Deutsch and Deutsch–Jozsa. Focus on the query framework and phase kickback.
-- [ ] **Hour 8 — Bernstein–Vazirani & Simon's algorithm.** Simon's is the bridge to exponential speedups.
-- [ ] **Hour 9 — Qiskit lab.** Implement Deutsch–Jozsa, Bernstein–Vazirani, and Simon's; verify speedup behavior on a simulator.
-- [ ] **Hour 10 — Phase estimation part 1: the QFT circuit.** Build it for 3–4 qubits; understand the controlled-phase pattern.
-- [ ] **Hour 11 — Phase estimation part 2.** Assemble the full algorithm from the QFT. Densest material — go slow.
-- [ ] **Hour 12 — Integer factorization / Shor's.** Order finding and how the number theory connects to the circuit.
-- [ ] **Hour 13 — Qiskit lab.** Build QFT and a small phase-estimation circuit; run order finding for a small number.
-- [ ] **Hour 14 — Grover's algorithm.** Oracle, diffusion operator, geometric intuition, optimal iteration count. Implement in Qiskit.
-- [ ] **Hour 15 — Consolidation.** Rework your two or three hardest circuits. *(Optional: Course 2 exam.)*
+## Study plan
 
----
+The full 15-hour primer lives in [`docs/study_plan.md`](docs/study_plan.md), grounded in two IBM courses:
+[Basics of Quantum Information](https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information) and
+[Fundamentals of Quantum Algorithms](https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms). Exams/badges are optional — the goal is practical understanding.
 
-## When the problem statement lands
-Tell me: the domain (healthcare / energy / engineering), and whether it looks like optimization, simulation, or something else. Likely additions then: Qiskit primitives (Sampler/Estimator), error mitigation, and a variational algorithm (VQE or QAOA) — the family most likely to show up in a hackathon build.
+## Running on real IBM hardware
+
+The examples default to the local simulator. To target IBM Quantum, copy `.env.example` to `.env`, add your API token from [quantum.cloud.ibm.com](https://quantum.cloud.ibm.com/), and wire `qiskit-ibm-runtime` into `src/qhack/backend.py`. Never commit `.env` — it's git-ignored.
