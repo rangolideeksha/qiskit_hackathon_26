@@ -22,11 +22,13 @@ def teleportation_circuit(theta: float = np.pi / 3) -> QuantumCircuit:
     # Prepare the state to teleport on q0.
     qc.ry(theta, 0)
     qc.barrier()
+    print(qc.draw(output="text"))
 
     # Entangle q1 and q2 (Bell pair).
     qc.h(1)
     qc.cx(1, 2)
     qc.barrier()
+    print(qc.draw(output="text"))
 
     # Bell measurement on q0, q1.
     qc.cx(0, 1)
@@ -34,12 +36,14 @@ def teleportation_circuit(theta: float = np.pi / 3) -> QuantumCircuit:
     qc.measure(0, crz)
     qc.measure(1, crx)
     qc.barrier()
+    print(qc.draw(output="text"))
 
     # Corrections on q2 conditioned on the classical bits.
     with qc.if_test((crx, 1)):
         qc.x(2)
     with qc.if_test((crz, 1)):
         qc.z(2)
+    print(qc.draw(output="text"))
 
     # Verify: undo the prep on q2. Correct teleportation => always measures 0.
     qc.ry(-theta, 2)

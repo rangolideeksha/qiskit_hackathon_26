@@ -19,7 +19,7 @@ def bell_circuit() -> QuantumCircuit:
 def main() -> None:
     qc = bell_circuit()
     print(qc.draw(output="text"))
-    counts = run_counts(qc, shots=1024)
+    counts = run_counts(qc, shots=100)
     print("counts:", counts)
 
 

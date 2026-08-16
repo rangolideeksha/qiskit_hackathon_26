@@ -12,12 +12,23 @@ dependencies = [
     "pylatexenc>=2.10",
     "numpy>=1.26",
     "ipykernel>=7.3.0",
+    "sympy>=1.14.0",
 ]
 
 [project.optional-dependencies]
 notebooks = [
     "jupyterlab>=4.0",
     "ipykernel>=6.29",
+]
+# Quantum chemistry: build molecular Hamiltonians for real catalyst systems.
+chem = [
+    "qiskit-nature>=0.7",
+    "pyscf>=2.6",
+]
+# Run Qiskit circuits on AWS Braket (emulators, AQT, Alice & Bob).
+braket = [
+    "qiskit-braket-provider>=0.11",
+    "amazon-braket-sdk>=1.90",
 ]
 
 [dependency-groups]
